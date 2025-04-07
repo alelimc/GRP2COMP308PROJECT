@@ -39,7 +39,7 @@ A web application for nurse practitioners to monitor patients during the first w
 ## Project Structure
 
 ```
-Group2COMP308Project/
+Grp2COMP308Project/
 ├── src/
 │   ├── ai-microservices/    # AI microservice for symptom analysis
 │   ├── backend/             # Express GraphQL API
