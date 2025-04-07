@@ -1,0 +1,65 @@
+COMP 308 Emerging Technologies - Group 2 Project Section 004 – Developing Apps Using Emerging Web Technologies
+
+Purpose:	The purpose of this project is to:
+•	Design and code web apps using emerging web frameworks
+•	Build a Graph QL API using Express or Next.js
+•	Build a Front-End (React or Svelte) that utilizes the Graph QL API 
+•	Apply appropriate design patterns and principles
+•	Use Deep Learning to make intelligent use of data
+
+References:	Read the reference textbooks, lecture slides, class examples, and additional references provided here. This material provides the necessary information that you need to complete the project. You may need to read and use more materials and tools to implement a good solution. 
+
+Be sure to read the following general instructions carefully:
+-	This Project may be completed in groups of 4-5 students.
+-	This project can be replaced with your capstone project (COMP-231 or COMP-313), if you use and implement the same front-end/back-end technologies shown in this document.
+-	You will have to present and demonstrate your solution in Week 14 and upload the solution on eCentennial through the assignment link on D2L. Bonus marks will be given if you also publish the app on Render, Microsoft Azure, Amazon, or another Cloud platform.
+-	Your VS Code project should be named “YourGroupNameCOMP308Project” and should be zipped in a file YourGroupNameCOMP308Project.zip.
+
+Project Specifications For Software Engineering Students
+
+Your client needs an application to help nurse practitioners to monitor patients during the first weeks of their release from the hospital and also help the patients to monitor their daily activities. Develop a modern web app that implements the following functionalities:
+
+1.	User registration/login
+
+2.	If the user is a nurse:
+    a.	Allow the user to enter vital signs: body temperature, heart rate, blood pressure, or respiratory rate.
+    b.	Allow the user to access information captured during a previous clinical visit, vital signs: body temperature, heart rate, blood pressure, or respiratory rate.
+    c.	Allow the user to send daily motivational tips to the patient (by storing them in the database and providing a daily tips page for the patient to view, etc.).
+    d.	Allow the user to generate a list of possible medical conditions, and advise the patient to see a doctor if necessary - intelligent use of symptoms or other data using deep learning and publicly available datasets. 
+
+3.	If the user is a patient:
+    a.	Allow the user to create and send an emergency alert to first responders (by storing this in a separate collection)
+    b.	Allow the user to enter daily information as specified by the nurse practitioner (for example pulse rate, blood pressure, weight, temperature, respiratory rate).
+    c.	Allow the user to use a checklist of common signs and symptoms (COVID-19 or RSV for example), and submit the choices. 
+4.	Use MongoDB for storing the information. 
+5.	Use Express to implement Graph QL API. Alternatively, use Next.js to implement the Graph QL API. You may use an Express or Flask microservice to implement the AI component that will intelligently process symptoms.
+
+6.	Choices for front-end frameworks:
+    a.	React 18.2 or higher, using functional components
+    b.	Next.js 14 or higher (https://nextjs.org/docs)
+    c.	Remix 1.17.0 or higher (https://remix.run/docs/en/1.17.0)
+    d.	Svelte 3.5 or higher (https://v2.svelte.dev/) 
+7.	Apply Micro frontends architecture for UI and Microservices architecture for the backend.
+
+8.	Using TypeScript is optional.
+
+Apply responsive web design principles. Use CSS and React Bootstrap or Tailwind to create a nice look and feel of your app. Display the logo for the application, other images, game objects, etc.										                                      					 												(100 marks)
+
+Evaluation of software solution for each component (all items need to be shown during the group 
+presentation):
+
+Evaluation Component	Weight
+User registration/login	10
+Nurse: Enter vital signs	5
+Nurse: Access previous clinical visit information	5
+Nurse: Send daily motivational tips to patients	5
+Nurse: Intelligent use of symptoms (deep learning)	15
+Patient: Create and send emergency alert	5
+Patient: Enter daily information	5
+Patient: Use checklist of common signs and symptoms	5
+MongoDB database (proper use of document structure/model)	5
+Correct Graph QL API implementation (proper use of design patterns with Express or Next.js)	15
+Correct Front End implementation (proper use of architecture/libraries/frameworks: React, Next.js, Remix, Svelte)	10
+Friendliness of UI (using CSS, React Bootstrap, etc.), correct use of naming guidelines for functional components, variables, methods, comments..	5
+Project Presentation according to presentation guidelines	10
+Total	100

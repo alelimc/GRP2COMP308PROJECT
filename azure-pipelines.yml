@@ -1,0 +1,52 @@
+trigger:
+  - main
+  - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildAndTest
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '16.x'
+    
+    - script: |
+        cd backend
+        npm install
+        npm run test
+      displayName: 'Backend - Install and Test'
+    
+    - script: |
+        cd frontend
+        npm install
+        npm run build
+        npm run test
+      displayName: 'Frontend - Install, Build and Test'
+
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'your-registry-connection'
+        repository: 'your-repo-name'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+          latest
+
+- stage: Deploy
+  jobs:
+  - deployment: Deploy
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebAppContainer@1
+            inputs:
+              azureSubscription: 'Your-Azure-Subscription'
+              appName: 'your-app-name'
+              containers: 'your-registry/your-repo-name:$(Build.BuildId)'
