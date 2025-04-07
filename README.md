@@ -124,8 +124,8 @@ Grp2COMP308Project/
 
 ## Contributors
 
-- [Team Member 1](https://github.com/alelimc)
-- [Team Member 2](https://github.com/ntsn301)
-- [Team Member 3](https://github.com/mtoleran35)
-- [Team Member 4](https://github.com/jbelenzo)
-- [Team Member 5](https://github.com/ArtBobr)
+- [Aleli Macapagal](https://github.com/alelimc)
+- [Thi So Ny Nguyen](https://github.com/ntsn301)
+- [Manuel Carl Toleran Jr.](https://github.com/mtoleran35)
+- [Jasper Belenzo](https://github.com/jbelenzo)
+- [Artem Bobrov](https://github.com/ArtBobr)
