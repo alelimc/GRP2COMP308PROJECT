@@ -67,8 +67,7 @@ Grp2COMP308Project/
 
 1. Clone the repository
    ```
-   git clone https://github.com/yourusername/Grp2COMP308Project.git
-   cd Grp2COMP308Project
+   git clone https://github.com/yourusername/GRP2COMP308PROJECT.git
    ```
 
 2. Install backend dependencies
