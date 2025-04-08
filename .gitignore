@@ -84,7 +84,7 @@ Thumbs.db
 
 # Gatsby files
 .cache/
-public
+#public
 
 # vuepress build output
 .vuepress/dist
