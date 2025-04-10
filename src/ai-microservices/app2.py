@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Apr 10 03:16:49 2025
-
 @author: Belenzo
 """
 # app2.py
