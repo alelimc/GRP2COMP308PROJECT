@@ -29,9 +29,24 @@ const GET_PATIENT_SYMPTOMS = gql`
   }
 `;
 
+const GET_PATIENT_VITAL_SIGNS = gql`
+  query GetPatientVitalSigns($patientId: ID!) {
+    vitalSigns(patientId: $patientId) {
+      bodyTemperature
+      heartRate
+      bloodPressure {
+        systolic
+        diastolic
+      }
+      respiratoryRate
+      date
+    }
+  }
+`;
+
 const PREDICT_CONDITIONS = gql`
-  mutation PredictConditions($symptoms: [String]!) {
-    predictConditions(symptoms: $symptoms) {
+  mutation PredictConditions($symptoms: [String]!, $vitalSigns: [Float]!) {
+    predictConditions(symptoms: $symptoms, vitalSigns: $vitalSigns) {
       name
       probability
       recommendConsultation
@@ -77,9 +92,15 @@ const MedicalConditions = () => {
     skip: !selectedPatient
   });
 
+  const { loading: vitalSignsLoading, data: vitalSignsData } = useQuery(GET_PATIENT_VITAL_SIGNS, {
+    variables: { patientId: selectedPatient },
+    skip: !selectedPatient
+  });
+
   const [predictConditions, { loading: predictLoading }] = useMutation(PREDICT_CONDITIONS, {
     onCompleted: (data) => {
       setPredictions(data.predictConditions);
+      console.log('Predictions:', data.predictConditions);
     },
     onError: (error) => {
       setError(`Error predicting conditions: ${error.message}`);
@@ -112,18 +133,52 @@ const MedicalConditions = () => {
   const handleAnalyzeSymptoms = async () => {
     setError('');
 
+    console.log('selectedPatient:', selectedPatient);
+    console.log('vitalSignsData:', vitalSignsData);
+    console.log('vitalSignsData.vitalSigns:', vitalSignsData?.vitalSigns);
+
+    console.log('symptomsData:', symptomsData);
+    console.log('symptomsData.symptoms:', symptomsData?.symptoms);
+
+    if (!vitalSignsData || !vitalSignsData.vitalSigns) {
+      setError('No vital signs data available for the selected patient');
+      return;
+    }
+
+    // Sort vitalSigns by date in descending order and pick the most recent record
+    const recentVitalSigns = [...vitalSignsData.vitalSigns].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+    console.log('recentVitalSigns:', recentVitalSigns);
+
     if (!selectedSymptomRecord) {
       setError('Please select a symptom record to analyze');
       return;
     }
 
+    if (!symptomsData || !symptomsData.symptoms) {
+      setError('No symptom data available');
+      return;
+    }
+
+    console.log('selectedSymptomRecord:', selectedSymptomRecord);
     const symptomRecord = symptomsData.symptoms.find(s => s.id === selectedSymptomRecord);
+    console.log('symptomRecord:', symptomRecord);
+    
     if (!symptomRecord) {
       setError('Selected symptom record not found');
       return;
     }
 
     const symptomNames = symptomRecord.symptoms.map(s => s.name);
+    console.log('symptomNames:', symptomNames);
+
+    const vitalSigns = [
+      recentVitalSigns.bodyTemperature || 0,
+      recentVitalSigns.heartRate || 0,
+      recentVitalSigns.bloodPressure?.systolic || 0,
+      recentVitalSigns.bloodPressure?.diastolic || 0,
+      recentVitalSigns.respiratoryRate || 0
+    ];
+    console.log('vitalSigns:', vitalSigns);
 
     try {
       // Show a loading message
@@ -131,7 +186,8 @@ const MedicalConditions = () => {
 
       await predictConditions({
         variables: {
-          symptoms: symptomNames
+          symptoms: symptomNames,
+          vitalSigns: vitalSigns
         }
       });
     } catch (err) {
@@ -276,7 +332,7 @@ const MedicalConditions = () => {
             <Button
               variant="primary"
               onClick={handleAnalyzeSymptoms}
-              disabled={!selectedSymptomRecord || predictLoading}
+              disabled={!selectedSymptomRecord || symptomsLoading || predictLoading}
               className="mb-3"
             >
               {predictLoading ? 'Analyzing...' : 'Analyze Symptoms'}
@@ -338,8 +394,10 @@ const MedicalConditions = () => {
                             <strong>{condition.name}</strong>
                             <div><small>Probability: {(condition.probability * 100).toFixed(1)}%</small></div>
                           </div>
-                          {condition.recommendConsultation && (
+                          {condition.recommendConsultation ? (
                             <Badge bg="danger">Consultation Recommended</Badge>
+                          ) : (
+                            <Badge bg="success">No Consultation Needed</Badge>
                           )}
                         </ListGroup.Item>
                       ))}
