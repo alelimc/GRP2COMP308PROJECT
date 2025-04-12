@@ -1,70 +1,52 @@
+import tensorflow as tf
+import numpy as np
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import random
 
 app = Flask(__name__)
 CORS(app)
 
-# Define sample symptoms and conditions
-sample_symptoms = [
-    'fever', 'cough', 'shortness of breath', 'fatigue', 'headache',
-    'sore throat', 'congestion', 'nausea', 'vomiting', 'diarrhea',
-    'body aches', 'loss of taste or smell', 'chills', 'dizziness'
-]
+# Load trained model
+model = tf.keras.models.load_model('disease_prediction_model_v3.h5')
 
-sample_conditions = [
+# Defined class names corresponding to model output
+class_names = [
     'Common Cold', 'Influenza', 'COVID-19', 'Allergies', 'Bronchitis',
     'Pneumonia', 'Sinusitis', 'Gastroenteritis', 'Migraine', 'Dehydration'
 ]
 
-# Simple condition-symptom mapping for demonstration
-condition_symptoms = {
-    'Common Cold': ['cough', 'congestion', 'sore throat', 'fatigue'],
-    'Influenza': ['fever', 'body aches', 'fatigue', 'headache', 'cough'],
-    'COVID-19': ['fever', 'cough', 'shortness of breath', 'loss of taste or smell', 'fatigue'],
-    'Allergies': ['congestion', 'sore throat', 'headache'],
-    'Bronchitis': ['cough', 'shortness of breath', 'fatigue'],
-    'Pneumonia': ['fever', 'cough', 'shortness of breath', 'fatigue'],
-    'Sinusitis': ['congestion', 'headache', 'sore throat'],
-    'Gastroenteritis': ['nausea', 'vomiting', 'diarrhea'],
-    'Migraine': ['headache', 'nausea', 'dizziness'],
-    'Dehydration': ['fatigue', 'dizziness', 'headache']
-}
+# Known symptoms the model was trained on (same order as training input)
+model_symptoms = [
+    'cough', 'fever', 'congestion', 'sore throat', 'fatigue', 'body aches',
+    'headache', 'shortness of breath', 'loss of taste or smell',
+    'nausea', 'vomiting', 'diarrhea', 'dizziness'
+]
+
+@app.route('/')
+def home():
+    return "Disease Prediction API Microservice using Multi-Layer Perceptron(Deep Learning)"
 
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        data = request.json
-        user_symptoms = data.get('symptoms', [])
+        data = request.get_json()
+        user_symptoms = [sym.lower() for sym in data.get('symptoms', [])]
 
-        # Convert symptoms to lowercase for matching
-        user_symptoms_lower = [s.lower() for s in user_symptoms]
+        # Convert user symptoms to binary input vector
+        input_vector = [1 if symptom in user_symptoms else 0 for symptom in model_symptoms]
 
-        # Calculate simple probability based on symptom overlap
+        # Predict
+        prediction = model.predict(np.array([input_vector]))[0]  # shape (10,)
+        
         results = []
-        for condition, symptoms in condition_symptoms.items():
-            # Count matching symptoms
-            matching = sum(1 for s in symptoms if s in user_symptoms_lower)
-            total = len(symptoms)
-
-            # Calculate probability (with some randomness for demonstration)
-            if matching > 0:
-                base_prob = matching / total
-                # Add some randomness (±20%)
-                prob = min(1.0, max(0.0, base_prob + random.uniform(-0.2, 0.2)))
-            else:
-                prob = random.uniform(0.0, 0.2)  # Small random probability if no matches
-
-            # Determine if consultation is recommended based on probability
-            recommend_consultation = prob > 0.5
-
+        for i, prob in enumerate(prediction):
             results.append({
-                'name': condition,
+                'name': class_names[i],
                 'probability': round(float(prob), 2),
-                'recommendConsultation': recommend_consultation
+                'recommendConsultation': float(prob) > 0.5
             })
 
-        # Sort by probability
+        # Sort predictions by descending probability
         results = sorted(results, key=lambda x: x['probability'], reverse=True)
 
         return jsonify({
@@ -72,26 +54,20 @@ def predict():
         })
 
     except Exception as e:
-        return jsonify({
-            'error': str(e)
-        }), 500
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/symptoms', methods=['GET'])
 def get_symptoms():
     try:
         return jsonify({
-            'symptoms': sample_symptoms
+            'symptoms': model_symptoms
         })
     except Exception as e:
-        return jsonify({
-            'error': str(e)
-        }), 500
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/health', methods=['GET'])
 def health_check():
-    return jsonify({
-        'status': 'healthy'
-    })
+    return jsonify({'status': 'healthy'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
