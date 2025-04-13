@@ -583,13 +583,15 @@ const Mutation = new GraphQLObjectType({
     predictConditions: {
       type: new GraphQLList(ConditionItemType),
       args: {
-        symptoms: { type: new GraphQLList(GraphQLString) }
+        symptoms: { type: new GraphQLList(GraphQLString) },
+        vitalSigns: { type: new GraphQLList(GraphQLFloat) }
       },
       async resolve(parent, args) {
         try {
           // Try to connect to the AI service
           const response = await axios.post(process.env.AI_SERVICE_URL + '/predict', {
-            symptoms: args.symptoms
+            symptoms: args.symptoms,
+            vitalSigns: args.vitalSigns
           });
           return response.data.predictions;
         } catch (err) {
