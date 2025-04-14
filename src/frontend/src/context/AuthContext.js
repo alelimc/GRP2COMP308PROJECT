@@ -68,11 +68,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    
+
     if (token && userData) {
       setUser(JSON.parse(userData));
     }
-    
+
     setLoading(false);
   }, []);
 
@@ -82,17 +82,17 @@ export const AuthProvider = ({ children }) => {
       const { data } = await loginUser({
         variables: { email, password }
       });
-      
+
       const { token, user } = data.loginUser;
-      
+
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('userRole', user.role);
-      
+
       setUser(user);
-      
+
       navigate(`/${user.role}/dashboard`);
-      
+
       return { success: true };
     } catch (error) {
       return { success: false, message: error.message };
@@ -105,17 +105,16 @@ export const AuthProvider = ({ children }) => {
       const { data } = await registerUser({
         variables: userData
       });
-      
+
       const { token, user } = data.registerUser;
-      
+
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('userRole', user.role);
-      
+
       setUser(user);
-      
-      navigate(`/${user.role}/dashboard`);
-      
+
+    
       return { success: true };
     } catch (error) {
       return { success: false, message: error.message };
