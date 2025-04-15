@@ -93,3 +93,7 @@ Thumbs.db
 .venv/
 src/frontend/node_modules/.cache
 src/frontend/node_modules/.cache
+
+# Virtual Environment
+C:/venvs/tf_venv/
+/venvs/
