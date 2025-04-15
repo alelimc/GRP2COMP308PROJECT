@@ -54,7 +54,8 @@ const PatientDashboard = () => {
 
   const { loading, error, data } = useQuery(GET_PATIENT_DATA, {
     variables: { patientId: user?.id },
-    skip: !user?.id
+    skip: !user?.id,
+    pollInterval: 1000 
   });
 
   if (loading) return <p>Loading your data...</p>;
@@ -221,8 +222,10 @@ const PatientDashboard = () => {
                           <strong>{condition.name}</strong>
                           <div><small>Probability: {(condition.probability * 100).toFixed(1)}%</small></div>
                         </div>
-                        {condition.recommendConsultation && (
+                        {condition.recommendConsultation ? (
                           <Badge bg="danger">Consultation Recommended</Badge>
+                        ) : (
+                          <Badge bg="success">No Consultation Needed</Badge>
                         )}
                       </ListGroup.Item>
                     ))}

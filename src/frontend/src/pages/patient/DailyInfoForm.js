@@ -67,10 +67,12 @@ const DailyInfoForm = () => {
 
   const { loading: historyLoading, data: historyData } = useQuery(GET_VITAL_SIGNS, {
     variables: { patientId: user?.id },
-    skip: !user?.id
+    skip: !user?.id,
+    pollInterval: 1000
   });
 
   const [addVitalSigns, { loading: mutationLoading }] = useMutation(ADD_VITAL_SIGNS, {
+    refetchQueries: [{ query: GET_VITAL_SIGNS, variables: { patientId: user?.id } }],
     onCompleted: () => {
       setSuccess('Daily information recorded successfully!');
       // Reset form
