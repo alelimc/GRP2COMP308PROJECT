@@ -34,7 +34,7 @@ A web application for nurse practitioners to monitor patients during the first w
 - React Bootstrap for UI components
 
 ### AI Microservice
-- Flask API
+- TensorFlow for AI model
 
 ## Project Structure
 
@@ -61,7 +61,7 @@ Grp2COMP308Project/
 ### Prerequisites
 - Node.js (v14 or higher)
 - MongoDB
-- Python 3.8+ (for AI microservice)
+- Python 3.8 to 3.11 (for AI microservice) (as of 04-14-2025)
 
 ### Installation
 
