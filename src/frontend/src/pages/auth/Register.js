@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Form, Button, Card, Alert, Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 
 const Register = () => {
@@ -15,7 +15,9 @@ const Register = () => {
     dateOfBirth: ''
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const { register, registerLoading } = useContext(AuthContext);
+  const navigate = useNavigate(); // Use useNavigate for redirection
 
   const handleChange = (e) => {
     setFormData({
@@ -27,7 +29,8 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+    setSuccess(''); // Reset success message on new submission
+
     // Validate form
     if (
       !formData.username ||
@@ -40,19 +43,21 @@ const Register = () => {
       setError('Please fill in all required fields');
       return;
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    
+
     // Remove confirmPassword from data sent to API
     const { confirmPassword, ...registerData } = formData;
-    
+
     const result = await register(registerData);
-    
+
     if (!result.success) {
       setError(result.message);
+    } else {
+      setSuccess('Registration successful! Please go to the login page.');
     }
   };
 
@@ -62,6 +67,7 @@ const Register = () => {
         <Card.Body>
           <h2 className="text-center mb-4">Register</h2>
           {error && <Alert variant="danger">{error}</Alert>}
+          {success && <Alert variant="success">{success}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Row>
               <Col md={6}>
@@ -89,7 +95,7 @@ const Register = () => {
                 </Form.Group>
               </Col>
             </Row>
-            
+
             <Form.Group className="mb-3" controlId="username">
               <Form.Label>Username*</Form.Label>
               <Form.Control
@@ -100,7 +106,7 @@ const Register = () => {
                 required
               />
             </Form.Group>
-            
+
             <Form.Group className="mb-3" controlId="email">
               <Form.Label>Email*</Form.Label>
               <Form.Control
@@ -111,7 +117,7 @@ const Register = () => {
                 required
               />
             </Form.Group>
-            
+
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3" controlId="password">
@@ -138,7 +144,7 @@ const Register = () => {
                 </Form.Group>
               </Col>
             </Row>
-            
+
             <Form.Group className="mb-3" controlId="dateOfBirth">
               <Form.Label>Date of Birth</Form.Label>
               <Form.Control
@@ -148,7 +154,7 @@ const Register = () => {
                 onChange={handleChange}
               />
             </Form.Group>
-            
+
             <Form.Group className="mb-3" controlId="role">
               <Form.Label>Register as*</Form.Label>
               <Form.Select
@@ -161,7 +167,7 @@ const Register = () => {
                 <option value="nurse">Nurse</option>
               </Form.Select>
             </Form.Group>
-            
+
             <Button
               variant="primary"
               type="submit"
