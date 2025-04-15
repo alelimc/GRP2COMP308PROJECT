@@ -87,14 +87,16 @@ const MedicalConditions = () => {
 
   const { loading: patientsLoading, data: patientsData } = useQuery(GET_PATIENTS);
 
-  const { loading: symptomsLoading, data: symptomsData } = useQuery(GET_PATIENT_SYMPTOMS, {
+  const { loading: symptomsLoading, data: symptomsData, refetch: refetchSymptoms } = useQuery(GET_PATIENT_SYMPTOMS, {
     variables: { patientId: selectedPatient },
-    skip: !selectedPatient
+    skip: !selectedPatient,
+    pollInterval: 1000 
   });
 
   const { loading: vitalSignsLoading, data: vitalSignsData } = useQuery(GET_PATIENT_VITAL_SIGNS, {
     variables: { patientId: selectedPatient },
-    skip: !selectedPatient
+    skip: !selectedPatient,
+    pollInterval: 1000 
   });
 
   const [predictConditions, { loading: predictLoading }] = useMutation(PREDICT_CONDITIONS, {
@@ -119,10 +121,19 @@ const MedicalConditions = () => {
     }
   });
 
-  const handlePatientChange = (e) => {
-    setSelectedPatient(e.target.value);
+  const handlePatientChange = async (e) => {
+    const patientId = e.target.value;
+    setSelectedPatient(patientId);
     setSelectedSymptomRecord('');
     setPredictions([]);
+
+  if (patientId) {
+    try {
+      await refetchSymptoms(); // Manually refetch symptoms for the selected patient
+    } catch (error) {
+      console.error('Error refetching symptoms:', error);
+    }
+  }
   };
 
   const handleSymptomRecordChange = (e) => {
