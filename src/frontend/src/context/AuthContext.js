@@ -83,11 +83,11 @@ export const AuthProvider = ({ children }) => {
         variables: { email, password }
       });
 
-      //const { token, user } = data.loginUser;
+      const { token, user } = data.loginUser;
 
-      //localStorage.setItem('token', token);
-      //localStorage.setItem('user', JSON.stringify(user));
-      //localStorage.setItem('userRole', user.role);
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('userRole', user.role);
 
       setUser(user);
 
@@ -106,13 +106,13 @@ export const AuthProvider = ({ children }) => {
         variables: userData
       });
 
-      const { token, user } = data.registerUser;
+      //const { token, user } = data.registerUser;
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('userRole', user.role);
+      //localStorage.setItem('token', token);
+      //localStorage.setItem('user', JSON.stringify(user));
+      //localStorage.setItem('userRole', user.role);
 
-      setUser(user);
+      //setUser(user);
 
     
       return { success: true };
