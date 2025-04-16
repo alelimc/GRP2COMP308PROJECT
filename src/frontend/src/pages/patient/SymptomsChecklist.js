@@ -5,8 +5,8 @@ import { useMutation, useQuery, gql } from '@apollo/client';
 import { AuthContext } from '../../context/AuthContext';
 
 const GET_SYMPTOMS_LIST = gql`
-  query {
-    symptoms {
+  query GetSymptomsList($patientId: ID!) {
+    symptoms(patientId: $patientId) {
       id
       symptoms {
         name
@@ -62,7 +62,10 @@ const SymptomsChecklist = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const { loading: historyLoading, data: historyData } = useQuery(GET_SYMPTOMS_LIST);
+  const { loading: historyLoading, data: historyData } = useQuery(GET_SYMPTOMS_LIST, {
+    variables: { patientId: user.id },
+    pollInterval: 1000 // Optional: keeps data fresh by polling every second
+  });
 
   const [addSymptoms, { loading: mutationLoading }] = useMutation(ADD_SYMPTOMS, {
     refetchQueries: [{ query: GET_SYMPTOMS_LIST }],
