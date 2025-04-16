@@ -43,13 +43,23 @@ const PreviousVisits = () => {
 
   const { loading: patientsLoading, data: patientsData } = useQuery(GET_PATIENTS);
 
-  const { loading: vitalsLoading, data: vitalsData } = useQuery(GET_VITAL_SIGNS, {
+  const { loading: vitalsLoading, data: vitalsData, refetch } = useQuery(GET_VITAL_SIGNS, {
     variables: { patientId: selectedPatient },
-    skip: !selectedPatient
+    skip: !selectedPatient,
+    pollInterval: 1000
   });
 
-  const handlePatientChange = (e) => {
-    setSelectedPatient(e.target.value);
+  const handlePatientChange = async (e) => {
+    const patientId = e.target.value;
+    setSelectedPatient(patientId);
+
+  if (patientId) {
+    try {
+      await refetch(); // Manually refetch the query when a patient is selected
+    } catch (error) {
+      console.error('Error refetching vital signs:', error);
+    }
+  }
   };
 
   const formatDate = (dateString) => {

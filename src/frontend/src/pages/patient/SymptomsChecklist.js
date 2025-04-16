@@ -65,6 +65,7 @@ const SymptomsChecklist = () => {
   const { loading: historyLoading, data: historyData } = useQuery(GET_SYMPTOMS_LIST);
 
   const [addSymptoms, { loading: mutationLoading }] = useMutation(ADD_SYMPTOMS, {
+    refetchQueries: [{ query: GET_SYMPTOMS_LIST }],
     onCompleted: () => {
       setSuccess('Symptoms recorded successfully!');
       // Reset form
