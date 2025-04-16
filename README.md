@@ -34,6 +34,7 @@ A web application for nurse practitioners to monitor patients during the first w
 - React Bootstrap for UI components
 
 ### AI Microservice
+- Flask
 - TensorFlow for AI model
 
 ## Project Structure
